@@ -15,7 +15,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// GameSceneのインスタンスの作成
 	std::unique_ptr<GameScene> gameScene = std::make_unique<GameScene>();
     gameScene->Initialize();
-
+	
     while (true) {
 		if (KamataEngine::Update()) {
 			break;
