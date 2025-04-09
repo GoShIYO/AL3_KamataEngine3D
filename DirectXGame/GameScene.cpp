@@ -94,7 +94,7 @@ void GameScene::InitializeBlock() {
 	// ブロックの生成
 	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
 		for (uint32_t x = 0; x < kNumBlockHorizontal; ++x) {
-			if ((x % 2 ) == 0 || (y % 2) == 0) {
+			if ((x % 2 ) == (y % 2)) {
 				worldTransformBlocks_[y][x] = new WorldTransform();
 				worldTransformBlocks_[y][x]->Initialize();
 				// ブロックを中央に調整する
