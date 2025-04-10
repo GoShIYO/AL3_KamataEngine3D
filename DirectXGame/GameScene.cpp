@@ -4,10 +4,12 @@
 using namespace KamataEngine;
 
 GameScene::~GameScene() {
-	delete model_;
+	delete modelPlayer_;
 	delete modelBlock_;
 	delete player_;
 	delete debugCamera_;
+	delete skydome_;
+	delete modelSkydome_;
 	for (auto& worldTransformLine : worldTransformBlocks_) {
 		for (auto worldTransformBlock : worldTransformLine) {
 			delete worldTransformBlock;
@@ -23,16 +25,16 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("uvChecker.png"); 
-	//3Dモデルの生成
-	model_ = Model::Create();
+	textureHandle_ = TextureManager::Load("block.png"); 
+
 	//カメラの初期化
     camera_.Initialize();
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth,WinApp::kWindowHeight);
-	player_ = new Player();
-	player_->Initialize(model_, textureHandle_, &camera_);
+	
+	InitializePlayer();
 	InitializeBlock();
+	InitializeSkydome();
 }
 
 void GameScene::Update() {
@@ -44,6 +46,8 @@ void GameScene::Update() {
 	player_->Update();
 	// ブロックの更新
 	UpdateBlock();
+
+
 	// カメラの更新
 	UpdateCamera();
 
@@ -65,17 +69,26 @@ void GameScene::DrawModel() {
 			if (!worldTransformBlock) {
 				continue;
 			}
-			model_->Draw(*worldTransformBlock, camera_);
+			modelBlock_->Draw(*worldTransformBlock, camera_, textureHandle_);
 		}
 	}
-	//player_->Draw();
-
+	player_->Draw();
+	skydome_->Draw();
 	// 3Dモデル描画後処理
 	Model::PostDraw();
 }
 	
 #ifdef _DEBUG
+void GameScene::InitializePlayer() {
+	// プレイヤーモデルの生成
+	modelPlayer_ = Model::CreateFromOBJ("player",true);
+	// プレイヤーの生成
+	player_ = new Player();
+	player_->Initialize(modelPlayer_,&camera_);
+
+}
 void GameScene::InitializeBlock() {
+	modelBlock_ = Model::Create();
 	// 要素数
 	const uint32_t kNumBlockVirtical = 10;
 	const uint32_t kNumBlockHorizontal = 20;
@@ -106,6 +119,15 @@ void GameScene::InitializeBlock() {
 		}
 	}
 }
+
+void GameScene::InitializeSkydome() { 
+	// モデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true); 
+	// 天球を作成
+	skydome_ = new Skydome();
+	skydome_->Initialize(modelSkydome_, &camera_);
+}
+
 void GameScene::UpdateBlock() {
 	// ブロックの更新
 	for (auto& worldTransformLine : worldTransformBlocks_) {

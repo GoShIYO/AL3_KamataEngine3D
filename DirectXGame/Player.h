@@ -15,7 +15,7 @@ public:
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
 	/// <param name="camera">カメラ</param>
-	void Initialize(Model* model, uint32_t textureHandle, Camera* camera);
+	void Initialize(Model* model,Camera* camera);
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -27,7 +27,6 @@ public:
 
 private:
 	WorldTransform worldTransform_;
-	Model* model_ = nullptr;
-	uint32_t textureHandle_ = 0u;
+	Model* modelPlayer_ = nullptr;
 	Camera* camera_ = nullptr;
 };
